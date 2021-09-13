@@ -3,22 +3,22 @@
 
 # SETTINGS {{{ ---
 
-active_text_color="#250F0B"
+active_text_color=${xrdb:color1:#222}
 active_bg=
 active_underline="#ECB3B2"
 
-inactive_text_color="#250F0B"
+inactive_text_color=#696969
 inactive_bg=
 inactive_underline=
 
 separator="·"
 show="window_class" # options: window_title, window_class, window_classname
 forbidden_classes="Polybar Conky Gmrun"
-empty_desktop_message="Desktop"
+empty_desktop_message=""
 
 char_limit=20
 max_windows=15
-char_case="normal" # normal, upper, lower
+char_case="lower" # normal, upper, lower
 add_spaces="true"
 resize_increment=16
 wm_border_width=1 # setting this might be required for accurate resize position
@@ -137,7 +137,16 @@ get_active_wid() {
 get_active_workspace() {
 	wmctrl -d |
 		while IFS="[ .]" read -r number active_status _; do
-			test "$active_status" = "*" && echo "$number" && break
+            # there's gotta be a better way to do this lol
+            # might seem redundant but it fixes an issue with xprop/wmctrl
+            # where workspace ordering doesn't line up with i3's workspace ordering
+            # if workspaces are moved between monitors
+            if [ "$active_status" = "*" ]; then
+                number=$(($number + 1))
+                real_ws=`i3-msg -t get_workspaces | jq ".[] | .num" | sed -n $number"p"`
+                wmctrl -d | grep " $real_ws$" | cut -d" " -f1
+                break
+            fi
 		done
 }
 
@@ -160,6 +169,9 @@ generate_window_list() {
 		case "$forbidden_classes" in
 			*$cls*) continue ;;
 		esac
+
+		# Skip .todo list
+		[ "$title" = "nvim .todo" ] && continue
 
 		# If max number of windows reached, just increment
 		# the windows counter
