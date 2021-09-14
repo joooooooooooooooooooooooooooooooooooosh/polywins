@@ -137,6 +137,9 @@ get_active_wid() {
 get_active_workspace() {
 	wmctrl -d |
 		while IFS="[ .]" read -r number active_status _; do
+            # TODO: breaks if workspaces are moved and polybar is restarted
+            # looks similar to #4001 on i3
+
             # there's gotta be a better way to do this lol
             # might seem redundant but it fixes an issue with xprop/wmctrl
             # where workspace ordering doesn't line up with i3's workspace ordering
