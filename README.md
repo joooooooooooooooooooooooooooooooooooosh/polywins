@@ -37,6 +37,7 @@ The following variables at the top of the file may be customized:
 ## Installing
 
 * Install `wmctrl`, it should be packaged by most distros. For example on Ubuntu and Debian-based distros, `sudo apt install wmctrl`
+* Install `jq`. For example on Ubuntu and Debian-based distros, `sudo apt install jq`
 * Save `polywins.sh`, for example to `~/.config/polybar/scripts`
 * Make the script executable with `chmod +x ~/.config/polybar/scripts/polywins.sh`
 * Change any setting you wish at the top of the script
@@ -80,3 +81,4 @@ line-size = 2
 * `xprop`
 * `wmctrl`
 * `slop` for rectangle-resizing
+* `jq` for i3 output manipulation

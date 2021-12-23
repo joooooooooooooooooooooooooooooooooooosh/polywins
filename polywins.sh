@@ -16,7 +16,7 @@ show="window_class" # options: window_title, window_class, window_classname
 forbidden_classes="Polybar Conky Gmrun computator"
 empty_desktop_message=""
 
-char_limit=10
+char_limit=20
 max_windows=15
 char_case="lower" # normal, upper, lower
 add_spaces="true"
@@ -146,6 +146,7 @@ get_active_workspace() {
 
 	wmctrl -d |
 		while IFS="[ .]" read -r number _ _ _ _ _ _ _ i3_ws; do
+            i3_ws=`echo $i3_ws | cut -d: -f1`
             test "$i3_ws" = "$curr_on_monitor" && echo "$number" && break
 		done
 }
@@ -164,6 +165,9 @@ generate_window_list() {
 		if [ "$ws" != "$active_workspace" ] && [ "$ws" != "-1" ]; then
 			continue
 		fi
+
+        # Skip .todo list
+		[ "$title" = "nvim .todo" ] && continue
 
 		# Don't show the window if its class is forbidden
 		case "$forbidden_classes" in
