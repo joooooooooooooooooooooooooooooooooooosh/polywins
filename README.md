@@ -2,6 +2,7 @@
 
 # Script: polywins
 A [Polybar](https://github.com/jaagr/polybar) script forked from [polybar-windows](https://github.com/aroma1994/polybar-windows) with additional features. (Requires EWMH-compliancy)
+This fork outputs the window names on the visible workspace *per monitor*.
 * Left click: Focus window and raise it if it is minimized. If the window is already focused, minimize it.
 * Middle click: Close the window.
 * Right click: Select a rectangle for the window to be re-positioned to.
@@ -39,11 +40,29 @@ The following variables at the top of the file may be customized:
 * Save `polywins.sh`, for example to `~/.config/polybar/scripts`
 * Make the script executable with `chmod +x ~/.config/polybar/scripts/polywins.sh`
 * Change any setting you wish at the top of the script
+* Ensure you are launching polybar with the current monitor name set as the MONITOR environment variable. For example:
+```bash
+#!/bin/bash
+killall -q polybar &
+wait
+if type "xrandr"; then
+  if [ `xrandr --query | grep " connected.*+0+0" | wc -l` -gt 1 ]; then
+    MONITOR=eDP-1 polybar --reload example &
+    exit
+  fi
+  for m in $(xrandr --query | grep " connected" | cut -d" " -f1); do
+    echo $m
+    MONITOR=$m polybar --reload example &
+  done
+else
+  polybar --reload example &
+fi
+```
 * Add the following module to your polybar config:
 ```ini
 [module/polywins]
 type = custom/script
-exec = ~/.config/polybar/scripts/polywins.sh 2>/dev/null
+exec = ~/.config/polybar/scripts/polywins.sh $MONITOR 2>/dev/null
 format = <label>
 label = %output%
 label-padding = 1

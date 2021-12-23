@@ -23,6 +23,12 @@ add_spaces="true"
 resize_increment=16
 wm_border_width=1 # setting this might be required for accurate resize position
 
+if [ -z "$1" ]; then
+    echo "Usage: $0 <monitor name>"
+    exit 1
+fi
+monitor="$1"
+
 # --- }}}
 
 
@@ -135,9 +141,12 @@ get_active_wid() {
 }
 
 get_active_workspace() {
+    curr_on_monitor=`i3-msg -t get_workspaces |
+        jq ".[] | select(.visible) | select(.output==\"$monitor\").num"`
+
 	wmctrl -d |
-		while IFS="[ .]" read -r number active_status _; do
-            test "$active_status" = "*" && echo "$number" && break
+		while IFS="[ .]" read -r number _ _ _ _ _ _ _ i3_ws; do
+            test "$i3_ws" = "$curr_on_monitor" && echo "$number" && break
 		done
 }
 
@@ -160,9 +169,6 @@ generate_window_list() {
 		case "$forbidden_classes" in
 			*$cls*) continue ;;
 		esac
-
-		# Skip .todo list
-		[ "$title" = "nvim .todo" ] && continue
 
 		# If max number of windows reached, just increment
 		# the windows counter
