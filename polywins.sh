@@ -13,7 +13,7 @@ inactive_underline=
 
 separator="·"
 show="window_class" # options: window_title, window_class, window_classname
-forbidden_classes="Polybar Conky Gmrun"
+forbidden_classes="Polybar Conky Gmrun computator"
 empty_desktop_message=""
 
 char_limit=20
@@ -137,19 +137,7 @@ get_active_wid() {
 get_active_workspace() {
 	wmctrl -d |
 		while IFS="[ .]" read -r number active_status _; do
-            # TODO: breaks if workspaces are moved and polybar is restarted
-            # looks similar to #4001 on i3
-
-            # there's gotta be a better way to do this lol
-            # might seem redundant but it fixes an issue with xprop/wmctrl
-            # where workspace ordering doesn't line up with i3's workspace ordering
-            # if workspaces are moved between monitors
-            if [ "$active_status" = "*" ]; then
-                number=$(($number + 1))
-                real_ws=`i3-msg -t get_workspaces | jq ".[] | .num" | sed -n $number"p"`
-                wmctrl -d | grep " $real_ws$" | cut -d" " -f1
-                break
-            fi
+            test "$active_status" = "*" && echo "$number" && break
 		done
 }
 
