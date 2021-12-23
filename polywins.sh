@@ -142,13 +142,12 @@ get_active_wid() {
 
 get_active_workspace() {
     curr_on_monitor=`i3-msg -t get_workspaces |
-        jq ".[] | select(.visible) | select(.output==\"$monitor\").num"`
+        jq ".[] | select(.visible) | select(.output==\"$monitor\").name" |
+        cut -d\" -f2`
 
 	wmctrl -d |
-		while IFS="[ .]" read -r number _ _ _ _ _ _ _ i3_ws; do
-            i3_ws=`echo $i3_ws | cut -d: -f1`
-            test "$i3_ws" = "$curr_on_monitor" && echo "$number" && break
-		done
+        grep " $curr_on_monitor$" |
+        cut -d' ' -f1
 }
 
 generate_window_list() {
@@ -165,9 +164,6 @@ generate_window_list() {
 		if [ "$ws" != "$active_workspace" ] && [ "$ws" != "-1" ]; then
 			continue
 		fi
-
-        # Skip .todo list
-		[ "$title" = "nvim .todo" ] && continue
 
 		# Don't show the window if its class is forbidden
 		case "$forbidden_classes" in
