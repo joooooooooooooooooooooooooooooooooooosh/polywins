@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # POLYWINS
 
 # SETTINGS {{{ ---
@@ -142,8 +142,9 @@ get_active_wid() {
 
 get_active_workspace() {
     curr_on_monitor=`i3-msg -t get_workspaces |
-        jq ".[] | select(.visible) | select(.output==\"$monitor\").name" |
-        cut -d\" -f2`
+        sed -E 's/output\":([^,]+),/\1\n/g' |
+        awk "/visible\":true/ && /$monitor/" |
+        sed -E 's/.*name\":\"([^\"]+)\".*/\1/'`
 
 	wmctrl -d |
         grep " $curr_on_monitor$" |
