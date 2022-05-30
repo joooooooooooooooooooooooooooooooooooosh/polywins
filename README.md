@@ -1,8 +1,11 @@
 ![polywins](screenshots/demonstration.gif)
 
+# Changes
+This fork outputs the window names on the visible workspace *per monitor* - e.g monitor 1 will always display the titles of windows on the workspace currently visible on that monitor, even if the *focused* workspace is one on another monitor. It also orders the window titles to mimick the actual window layout left-to-right (tiebroken by top-to-bottom).
+
 # Script: polywins
 A [Polybar](https://github.com/jaagr/polybar) script forked from [polybar-windows](https://github.com/aroma1994/polybar-windows) with additional features. (Requires EWMH-compliancy)
-This fork outputs the window names on the visible workspace *per monitor*.
+
 * Left click: Focus window and raise it if it is minimized. If the window is already focused, minimize it.
 * Middle click: Close the window.
 * Right click: Select a rectangle for the window to be re-positioned to.
