@@ -141,10 +141,10 @@ get_active_wid() {
 }
 
 get_active_workspace() {
-    curr_on_monitor=`i3-msg -t get_workspaces |
+    curr_on_monitor=$(i3-msg -t get_workspaces |
         sed -E 's/output\":([^,]+),/\1\n/g' |
         awk "/visible\":true/ && /$monitor/" |
-        sed -E 's/.*name\":\"([^\"]+)\".*/\1/'`
+        sed -E 's/.*name\":\"([^\"]+)\".*/\1/')
 
 	wmctrl -d |
         grep " $curr_on_monitor$" |
@@ -160,7 +160,7 @@ generate_window_list() {
 	# Format each window name one by one
 	# Space and . are both used as IFS,
 	# because classname and class are separated by '.'
-	while IFS="[ .\.]" read -r wid ws cname cls host title; do
+	while IFS="[ .\.]" read -r wid ws xoff yoff width height cname cls host title; do
 		# Don't show the window if on another workspace (-1 = sticky)
 		if [ "$ws" != "$active_workspace" ] && [ "$ws" != "-1" ]; then
 			continue
@@ -229,7 +229,7 @@ generate_window_list() {
 
 		window_count=$(( window_count + 1 ))
 	done <<-EOF
-	$(wmctrl -lx)
+	$(wmctrl -lGx | sort -nk3 -nk4)
 	EOF
 
 	# After printing all the windows,
