@@ -49,10 +49,6 @@ The following variables at the top of the file may be customized:
 killall -q polybar &
 wait
 if type "xrandr"; then
-  if [ `xrandr --query | grep " connected.*+0+0" | wc -l` -gt 1 ]; then
-    MONITOR=eDP-1 polybar --reload example &
-    exit
-  fi
   for m in $(xrandr --query | grep " connected" | cut -d" " -f1); do
     echo $m
     MONITOR=$m polybar --reload example &
