@@ -13,7 +13,7 @@ inactive_underline=
 
 separator="·"
 show="window_class" # options: window_title, window_class, window_classname
-forbidden_classes="Polybar Conky Gmrun computator"
+forbidden_classes="Polybar Conky Gmrun $(hostname)"
 empty_desktop_message=""
 
 char_limit=20
