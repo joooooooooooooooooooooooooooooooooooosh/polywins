@@ -24,8 +24,8 @@ resize_increment=16
 wm_border_width=1 # setting this might be required for accurate resize position
 
 if [ -z "$1" ]; then
-    echo "Usage: $0 <monitor name>"
-    exit 1
+	echo "Usage: $0 <monitor name>"
+	exit 1
 fi
 monitor="$1"
 
@@ -141,14 +141,14 @@ get_active_wid() {
 }
 
 get_active_workspace() {
-    curr_on_monitor=$(i3-msg -t get_workspaces |
-        sed -E 's/output\":([^,]+),/\1\n/g' |
-        awk "/visible\":true/ && /$monitor/" |
-        sed -E 's/.*name\":\"([^\"]+)\".*/\1/')
+	curr_on_monitor=$(i3-msg -t get_workspaces |
+		sed -E 's/output\":([^,]+),/\1\n/g' |
+		awk "/visible\":true/ && /$monitor/" |
+		sed -E 's/.*name\":\"([^\"]+)\".*/\1/')
 
 	wmctrl -d |
-        grep " $curr_on_monitor$" |
-        cut -d' ' -f1
+		grep " $curr_on_monitor$" |
+		cut -d' ' -f1
 }
 
 generate_window_list() {
